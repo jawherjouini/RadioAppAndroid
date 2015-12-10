@@ -31,6 +31,7 @@ import android.widget.TextView;
 
 import com.example.android.materialdesigncodelab.R;
 import com.example.android.materialdesigncodelab.activities.DetailActivity;
+import com.example.android.materialdesigncodelab.activities.RadiosCardActivity;
 import com.example.android.materialdesigncodelab.domains.RadioStation;
 import com.example.android.materialdesigncodelab.utils.RadioApplication;
 import com.squareup.picasso.Picasso;
@@ -68,19 +69,16 @@ public class ByLangFragment extends Fragment {
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView list_title;
+        String lang;
 
         public ViewHolder(View itemView) {
             super(itemView);
             list_title = (TextView) itemView.findViewById(R.id.tile_title);
-        }
-
-        public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.item_tile, parent, false));
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Context context = v.getContext();
-                    Intent intent = new Intent(context, DetailActivity.class);
+                    Intent intent = new Intent(context, RadiosCardActivity.class).putExtra("extra",lang.toUpperCase());
                     context.startActivity(intent);
                 }
             });
@@ -92,15 +90,7 @@ public class ByLangFragment extends Fragment {
      */
     public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
         // Set numbers of Tiles in RecyclerView.
-        public String[] languages = {"Albanian",
-                "Arabic",
-                "Chinese",
-                "Deutsch",
-                "English",
-                "French",
-                "Italian",
-                "Russian",
-                "Turkish"};
+
 
         public ContentAdapter() {
 
@@ -116,13 +106,13 @@ public class ByLangFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            Log.e("item", languages[position]);
-            holder.list_title.setText(languages[position]);
+            holder.list_title.setText(RadioApplication.languages[position]);
+            holder.lang=RadioApplication.languages[position];
         }
 
         @Override
         public int getItemCount() {
-            return languages.length;
+            return RadioApplication.languages.length;
         }
     }
 }

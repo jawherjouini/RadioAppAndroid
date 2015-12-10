@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2015 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,8 +13,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/detail_content"
     android:layout_width="match_parent"
@@ -73,31 +71,58 @@
             android:paddingTop="@dimen/md_keylines">
 
             <TextView
+                android:id="@+id/homepage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="?attr/colorAccent"
+                android:layout_marginBottom="@dimen/md_keylines"
                 android:text="Description"
-                android:textSize="@dimen/article_titles"
-                android:layout_marginBottom="@dimen/md_keylines" />
+                android:textColor="?attr/colorAccent"
+                android:textSize="@dimen/article_titles" />
 
             <TextView
+                android:id="@+id/country"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/detail_location" />
+
+            <TextView
+                android:id="@+id/tags"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/detail_desc" />
 
             <TextView
+                android:id="@+id/langua"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="?attr/colorAccent"
-                android:text="Location"
-                android:textSize="@dimen/article_titles"
                 android:layout_marginBottom="@dimen/md_keylines"
-                android:layout_marginTop="@dimen/md_keylines" />
+                android:layout_marginTop="@dimen/md_keylines"
+                android:text="Location"
+                android:textColor="?attr/colorAccent"
+                android:textSize="@dimen/article_titles" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/detail_location" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:layout_marginBottom="@dimen/md_keylines"
+        android:layout_marginRight="@dimen/md_keylines"
+        android:src="@drawable/ic_stop"
+        android:visibility="gone" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:layout_marginBottom="@dimen/md_keylines"
+        android:layout_marginRight="@dimen/md_keylines"
+        android:src="@drawable/ic_play"
+        android:visibility="visible" />
+
+
 </android.support.design.widget.CoordinatorLayout>

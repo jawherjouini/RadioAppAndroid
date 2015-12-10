@@ -50,14 +50,15 @@ import java.util.List;
 /**
  * Provides UI for the view with Cards.
  */
-public class CardContentFragment extends Fragment {
+public class FavorisFragment extends Fragment {
     static Activity activity;
-
-    String extra;
-    Boolean verif = false; //False veut dire que c'est un langage
-    public static Gson gson;
-    public String jsonFav;
+    private String jsonFav;
+    private static Gson gson;
     public static ContentAdapter adapter;
+
+    public static void refresh() {
+        adapter.notifyDataSetChanged();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -74,17 +75,6 @@ public class CardContentFragment extends Fragment {
         } else {
             RadioApplication.listFavoris = new ArrayList<>();
         }
-        RadioApplication.listRadiosToShow = new ArrayList<>();
-        Bundle bundle = getArguments();
-        if (!bundle.getString("extra").equals("")) extra = bundle.getString("extra");
-        if (Arrays.asList(RadioApplication.tags).contains(extra))
-            verif = true; //True veut dire que c'est un tag
-        for (RadioStation item : RadioApplication.listRadios) {
-            if ((verif && item.getTags().toUpperCase().contains(extra)) || (!verif && item.getLangua().toUpperCase().contains(extra))) {
-                RadioApplication.listRadiosToShow.add(item);
-                Log.e("item", item.getTags() + " - " + item.getLangua());
-            }
-        }
 
         adapter = new ContentAdapter();
         recyclerView.setAdapter(adapter);
@@ -97,10 +87,6 @@ public class CardContentFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         refresh();
-    }
-
-    public static void refresh() {
-        adapter.notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -119,7 +105,7 @@ public class CardContentFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     Context context = v.getContext();
-                    RadioApplication.selectedRadio=RadioApplication.listRadiosToShow.get(getPosition());
+                    RadioApplication.selectedRadio = RadioApplication.listFavoris.get(getPosition());
                     Intent intent = new Intent(context, DetailActivity.class);
                     context.startActivity(intent);
                 }
@@ -130,7 +116,7 @@ public class CardContentFragment extends Fragment {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    url = RadioApplication.listRadiosToShow.get(getPosition()).getHomepage();
+                    url = RadioApplication.listFavoris.get(getPosition()).getHomepage();
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                     activity.startActivity(browserIntent);
                 }
@@ -142,18 +128,12 @@ public class CardContentFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     //TODO
-                    if (!RadioApplication.listFavoris.contains(RadioApplication.listRadiosToShow.get(getPosition()))) {
-                        RadioApplication.listFavoris.add(RadioApplication.listRadiosToShow.get(getPosition()));
-                        String json = gson.toJson(RadioApplication.listFavoris);
-                        activity.getSharedPreferences("App", activity.MODE_PRIVATE).edit().putString("fav", json).commit();
-                        Snackbar.make(v, "Added to Favorite",
-                                Snackbar.LENGTH_LONG).show();
-                    } else {
-                        Snackbar.make(v, "Already in favorites",
-                                Snackbar.LENGTH_LONG).show();
-                    }
+                    RadioApplication.listFavoris.remove(RadioApplication.listFavoris.get(getPosition()));
+                    String json = gson.toJson(RadioApplication.listFavoris);
+                    activity.getSharedPreferences("App", activity.MODE_PRIVATE).edit().putString("fav", json).commit();
                     refresh();
-
+                    Snackbar.make(v, "Removed from Favorite",
+                            Snackbar.LENGTH_LONG).show();
                 }
             });
 
@@ -161,7 +141,7 @@ public class CardContentFragment extends Fragment {
             shareImageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    RadioApplication.selectedRadio=RadioApplication.listRadiosToShow.get(getPosition());
+                    RadioApplication.selectedRadio = RadioApplication.listFavoris.get(getPosition());
                     Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                     sharingIntent.setType("text/html");
                     sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Radio FM share");
@@ -189,7 +169,7 @@ public class CardContentFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            RadioStation item = RadioApplication.listRadiosToShow.get(position);
+            RadioStation item = RadioApplication.listFavoris.get(position);
             RadioApplication.selectedRadio = item;
             holder.list_title.setText(item.getName());
 
@@ -212,7 +192,7 @@ public class CardContentFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return RadioApplication.listRadiosToShow.size();
+            return RadioApplication.listFavoris.size();
         }
     }
 }

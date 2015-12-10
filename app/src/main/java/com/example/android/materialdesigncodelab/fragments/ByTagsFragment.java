@@ -31,13 +31,12 @@ import android.widget.TextView;
 import com.example.android.materialdesigncodelab.R;
 import com.example.android.materialdesigncodelab.activities.DetailActivity;
 import com.example.android.materialdesigncodelab.activities.RadiosCardActivity;
+import com.example.android.materialdesigncodelab.utils.RadioApplication;
 
 /**
  * Provides UI for the view with Tile.
  */
 public class ByTagsFragment extends Fragment {
-
-    private int typeFrag;
 
     public ByTagsFragment() {
     }
@@ -65,24 +64,21 @@ public class ByTagsFragment extends Fragment {
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView list_title;
+        String tag;
 
         public ViewHolder(View itemView) {
             super(itemView);
             list_title = (TextView) itemView.findViewById(R.id.tile_title);
-        }
-
-        public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.item_tile, parent, false));
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Context context = v.getContext();
-
-                    Intent intent = new Intent(context, RadiosCardActivity.class);
+                    Intent intent = new Intent(context, RadiosCardActivity.class).putExtra("extra",tag.toUpperCase());
                     context.startActivity(intent);
                 }
             });
         }
+
     }
 
     /**
@@ -90,13 +86,6 @@ public class ByTagsFragment extends Fragment {
      */
     public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
         // Set numbers of Tiles in RecyclerView
-        public String[] tags = {"80's", "90's", "alternative",
-                "classical",
-                "dance",
-                "electro",
-                "hiphop",
-                "rock",
-                "trance"};
 
         public ContentAdapter() {
 
@@ -112,13 +101,13 @@ public class ByTagsFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            Log.e("item", tags[position]);
-            holder.list_title.setText(tags[position]);
+            holder.list_title.setText(RadioApplication.tags[position]);
+            holder.tag = RadioApplication.tags[position];
         }
 
         @Override
         public int getItemCount() {
-            return tags.length;
+            return RadioApplication.tags.length;
         }
     }
 }

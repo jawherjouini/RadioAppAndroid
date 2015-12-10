@@ -42,6 +42,7 @@ import com.squareup.picasso.Picasso;
 public class ListContentFragment extends Fragment {
 
     static Activity activity;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -57,7 +58,7 @@ public class ListContentFragment extends Fragment {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView list_title,list_desc;
+        TextView list_title, list_desc;
         ImageView list_avatar;
 
         public ViewHolder(View itemView) {
@@ -65,20 +66,16 @@ public class ListContentFragment extends Fragment {
             list_title = (TextView) itemView.findViewById(R.id.list_title);
             list_desc = (TextView) itemView.findViewById(R.id.list_desc);
             list_avatar = (ImageView) itemView.findViewById(R.id.list_avatar);
-
-        }
-
-        public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.item_list, parent, false));
-
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Context context = v.getContext();
+                    RadioApplication.selectedRadio = RadioApplication.listRadiosByCountry.get(getPosition());
                     Intent intent = new Intent(context, DetailActivity.class);
                     context.startActivity(intent);
                 }
             });
+
         }
     }
 
@@ -101,7 +98,7 @@ public class ListContentFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            Log.e("item", RadioApplication.listRadiosByCountry.get(position).toString());
+            //Log.e("item", RadioApplication.listRadiosByCountry.get(position).toString());
             RadioStation item = RadioApplication.listRadiosByCountry.get(position);
             holder.list_title.setText(item.getName());
             holder.list_desc.setText(item.getHomepage());
@@ -111,7 +108,7 @@ public class ListContentFragment extends Fragment {
                         .into(holder.list_avatar);
             } catch (Exception e) {
                 holder.list_avatar.setImageResource(R.drawable.radiooooos);
-                Log.e("exception","favicon: "+e.getMessage());
+                Log.e("exception", "favicon: " + e.getMessage());
             }
         }
 

@@ -35,6 +35,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.example.android.materialdesigncodelab.fragments.ByLangFragment;
+import com.example.android.materialdesigncodelab.fragments.FavorisFragment;
 import com.example.android.materialdesigncodelab.fragments.ListContentFragment;
 import com.example.android.materialdesigncodelab.R;
 import com.example.android.materialdesigncodelab.fragments.ByTagsFragment;
@@ -81,30 +82,22 @@ public class MainActivity extends AppCompatActivity {
                         // Set item in checked state
                         menuItem.setChecked(true);
 
-                        // TODO: handle navigation
-
                         // Closing drawer on item click
                         mDrawerLayout.closeDrawers();
                         return true;
                     }
                 });
-        // Adding Floating Action Button to bottom right of main view
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Snackbar.make(v, "Hello Snackbar!",
-                        Snackbar.LENGTH_LONG).show();
-            }
-        });
+
     }
 
     // Add Fragments to Tabs
     private void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getSupportFragmentManager());
         adapter.addFragment(new ListContentFragment(), "Near Me");
-        adapter.addFragment(new ByTagsFragment(), "Categories");
+        adapter.addFragment(new ByTagsFragment(), "Category");
         adapter.addFragment(new ByLangFragment(), "Languages");
+        adapter.addFragment(new FavorisFragment(), "Favs");
+
         viewPager.setAdapter(adapter);
     }
 

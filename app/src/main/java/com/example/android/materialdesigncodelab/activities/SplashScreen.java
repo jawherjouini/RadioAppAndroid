@@ -8,11 +8,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.android.materialdesigncodelab.R;
 import com.example.android.materialdesigncodelab.domains.RadioStation;
 import com.example.android.materialdesigncodelab.utils.IAsyncTask;
 import com.example.android.materialdesigncodelab.utils.RadioApplication;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,6 +24,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -35,10 +39,13 @@ import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
  */
 public class SplashScreen extends Activity implements IAsyncTask {
 
+    private Gson gson;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash);
+        gson = new Gson();
 
         if (getCountry(this) != null) {
             RadioApplication.country = getCountry(this);
@@ -418,7 +425,6 @@ public class SplashScreen extends Activity implements IAsyncTask {
                         if (country.toUpperCase().equals(RadioApplication.country)) {
                             RadioApplication.listRadiosByCountry.add(radioStation);
                         }
-                        Log.i("JSON parse", radioStation.toString());
                     }
                     /****************** End Parse Response JSON Data *************/
 
@@ -428,12 +434,35 @@ public class SplashScreen extends Activity implements IAsyncTask {
                 }
             }
 
+            if (RadioApplication.listRadiosByCountry == null) {
+                Type type = new TypeToken<List<RadioStation>>() {
+                }.getType();
+                String json = getSharedPreferences("App", MODE_PRIVATE).getString("listcountry", null);
+                RadioApplication.listRadiosByCountry = gson.fromJson(json, type);
+            } else {
+                String json = gson.toJson(RadioApplication.listRadiosByCountry);
+                getSharedPreferences("App", MODE_PRIVATE).edit().putString("listcountry", json).commit();
+            }
+
+            if (radios == null) {
+                Type type = new TypeToken<List<RadioStation>>() {
+                }.getType();
+                String json = getSharedPreferences("App", MODE_PRIVATE).getString("list", null);
+                radios = gson.fromJson(json, type);
+                Toast.makeText(getApplicationContext(), "Offline mode", Toast.LENGTH_LONG).show();
+            } else {
+                String json = gson.toJson(radios);
+                getSharedPreferences("App", MODE_PRIVATE).edit().putString("list", json).commit();
+            }
+
             // Close progress dialog
             Dialog.dismiss();
-            RadioApplication.listRadios = radios;
 
-            Intent intent = new Intent(SplashScreen.this, MainActivity.class);
-            startActivity(intent);
+            RadioApplication.listRadios = radios;
+            if (RadioApplication.listRadios != null && RadioApplication.listRadiosByCountry != null) {
+                Intent intent = new Intent(SplashScreen.this, MainActivity.class);
+                startActivity(intent);
+            }
             finish();
         }
 

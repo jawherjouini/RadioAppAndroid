@@ -15,22 +15,18 @@ public class RadiosCardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_radios_card);
-        replaceFragment(new CardContentFragment());
-
+        String extra = getIntent().getStringExtra("extra");
+        Bundle bundle = new Bundle();
+        bundle.putCharSequence("extra", extra);
+        replaceFragment(new CardContentFragment(), bundle);
     }
 
 
-    private void replaceFragment (Fragment fragment){
-        String backStateName = fragment.getClass().getName();
-
+    private void replaceFragment(Fragment fragment, Bundle bundle) {
+        fragment.setArguments(bundle);
         FragmentManager manager = getSupportFragmentManager();
-        boolean fragmentPopped = manager.popBackStackImmediate (backStateName, 0);
-
-        if (!fragmentPopped){ //fragment not in back stack, create it.
-            FragmentTransaction ft = manager.beginTransaction();
-            ft.replace(R.id.container, fragment);
-            ft.addToBackStack(backStateName);
-            ft.commit();
-        }
+        FragmentTransaction ft = manager.beginTransaction();
+        ft.replace(R.id.container, fragment);
+        ft.commit();
     }
 }

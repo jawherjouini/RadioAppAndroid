@@ -16,6 +16,8 @@
 
 package com.example.android.materialdesigncodelab.activities;
 
+import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -49,16 +51,18 @@ public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
     ViewPager viewPager;
+    Activity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        activity = this;
         // Adding Toolbar to Main screen
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Setting ViewPager for each Tabs
-      viewPager  = (ViewPager) findViewById(R.id.viewpager);
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
         // Set Tabs inside Toolbar
         TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
@@ -79,13 +83,19 @@ public class MainActivity extends AppCompatActivity {
                     // This method will trigger on item Click of navigation menu
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        String pos=menuItem.getTitle().toString();
-                        Log.e("position:",""+pos);
+                        String pos = menuItem.getTitle().toString();
+                        Log.e("position:", "" + pos);
                         menuItem.setChecked(true);
-                /*       switch(pos)
-                        {
-                            case "Home"
-                        }*/
+                        switch (pos.toUpperCase().trim()) {
+                            case "HOME":
+                                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                                viewPager.setCurrentItem(0);
+                                break;
+                            case "CAR MODE":
+                                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                                viewPager.setCurrentItem(3);
+                                break;
+                        }
                         // Closing drawer on item click
                         mDrawerLayout.closeDrawers();
                         return true;

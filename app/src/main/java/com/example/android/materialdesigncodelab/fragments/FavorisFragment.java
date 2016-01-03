@@ -19,6 +19,7 @@ package com.example.android.materialdesigncodelab.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -26,6 +27,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +47,8 @@ import com.squareup.picasso.Picasso;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.support.v7.widget.LinearLayoutManager.*;
 
 /**
  * Provides UI for the view with Cards.
@@ -78,7 +82,17 @@ public class FavorisFragment extends Fragment {
         adapter = new ContentAdapter();
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        int ot = getResources().getConfiguration().orientation;
+        switch(ot) {
+            case  Configuration.ORIENTATION_LANDSCAPE:
+                Log.d("my orient" ,"ORIENTATION_LANDSCAPE");
+                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),HORIZONTAL,false));
+                break;
+            default:
+                Log.d("my orient", "default val");
+                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), VERTICAL, false));
+                break;
+        }
         return recyclerView;
     }
 

@@ -11,9 +11,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -60,6 +62,7 @@ public class RadiosCardActivity extends AppCompatActivity {
     private InitiateSearch initiateSearch;
     private ImageView clearSearch;
     private View toolbar_shadow;
+    private View view_search;
     public static EditText edit_text_search;
     private CardView card_search;
     private ImageView image_search_back;
@@ -121,6 +124,7 @@ public class RadiosCardActivity extends AppCompatActivity {
         });
         toolbar.inflateMenu(R.menu.menu_search);
         toolbar_shadow = findViewById(R.id.toolbar_shadow);
+        view_search = findViewById(R.id.view_search);
         edit_text_search = (EditText) findViewById(R.id.edit_text_search);
         card_search = (CardView) findViewById(R.id.card_search);
         image_search_back = (ImageView) findViewById(R.id.image_search_back);
@@ -135,7 +139,7 @@ public class RadiosCardActivity extends AppCompatActivity {
         image_search_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                initiateSearch.handleToolBar(RadiosCardActivity.this, card_search, toolbar, edit_text_search);
+                initiateSearch.handleToolBar(RadiosCardActivity.this, card_search, toolbar, view_search, edit_text_search);
                 toolbar_shadow.setVisibility(View.VISIBLE);
             }
         });
@@ -162,7 +166,7 @@ public class RadiosCardActivity extends AppCompatActivity {
                 int menuItem = item.getItemId();
                 switch (menuItem) {
                     case R.id.action_search:
-                        initiateSearch.handleToolBar(RadiosCardActivity.this, card_search, toolbar, edit_text_search);
+                        initiateSearch.handleToolBar(RadiosCardActivity.this, card_search, toolbar, view_search, edit_text_search);
                         break;
                     default:
                         break;
@@ -217,7 +221,7 @@ public class RadiosCardActivity extends AppCompatActivity {
     }
 
     private void swap(ContentAdapter adapter) {
-        recyclerView.swapAdapter(adapter,false);
+        recyclerView.swapAdapter(adapter, true);
     }
 
     //TODO vocal
@@ -246,7 +250,7 @@ public class RadiosCardActivity extends AppCompatActivity {
             edit_text_search.setText(results.get(0));
 
         } else {
-            Log.e("vocal","not ok");
+            Log.e("vocal", "not ok");
         }
     }
 
@@ -283,7 +287,7 @@ public class RadiosCardActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Context context = v.getContext();
-                    RadioApplication.selectedRadio=listRadiosToShow.get(getPosition());
+                    RadioApplication.selectedRadio = listRadiosToShow.get(getPosition());
                     Intent intent = new Intent(context, DetailActivity.class);
                     context.startActivity(intent);
                 }
@@ -323,7 +327,7 @@ public class RadiosCardActivity extends AppCompatActivity {
             shareImageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    RadioApplication.selectedRadio=listRadiosToShow.get(getPosition());
+                    RadioApplication.selectedRadio = listRadiosToShow.get(getPosition());
                     Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                     sharingIntent.setType("text/html");
                     sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Radio FM share");
@@ -347,11 +351,12 @@ public class RadiosCardActivity extends AppCompatActivity {
         public ContentAdapter(List<RadioStation> list) {
             listRadiosToShow = list;
         }
+
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View v = LayoutInflater.from(parent.getContext()).inflate(
                     R.layout.item_card, parent, false);
-            ViewHolder vh = new ViewHolder(v,listRadiosToShow);
+            ViewHolder vh = new ViewHolder(v, listRadiosToShow);
             return vh;
         }
 

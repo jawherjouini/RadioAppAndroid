@@ -20,14 +20,16 @@ import com.example.android.materialdesigncodelab.R;
 
 public class InitiateSearch {
 
-    public static void handleToolBar(final Context context, final CardView search, Toolbar toolbarMain, final EditText editText) {
-       if (search.getVisibility() == View.VISIBLE) {
+    public static void handleToolBar(final Context context, final CardView search, Toolbar toolbarMain, final View view, final EditText editText) {
+        final Animation fade_in = AnimationUtils.loadAnimation(context.getApplicationContext(), android.R.anim.fade_in);
+        final Animation fade_out = AnimationUtils.loadAnimation(context.getApplicationContext(), android.R.anim.fade_out);
+        if (search.getVisibility() == View.VISIBLE) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 final Animator animatorHide = ViewAnimationUtils.createCircularReveal(search,
-                    search.getWidth() - (int) convertDpToPixel(56, context),
-                    (int) convertDpToPixel(23, context),
-                    (float) Math.hypot(search.getWidth(), search.getHeight()),
-                    0);
+                        search.getWidth() - (int) convertDpToPixel(56, context),
+                        (int) convertDpToPixel(23, context),
+                        (float) Math.hypot(search.getWidth(), search.getHeight()),
+                        0);
                 animatorHide.addListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animation) {
@@ -36,8 +38,10 @@ public class InitiateSearch {
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
+                        view.startAnimation(fade_out);
+                        view.setVisibility(View.GONE);
                         search.setVisibility(View.GONE);
-                        //((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(editText.getWindowToken(), 0);
+                        ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(view.getWindowToken(), 0);
                     }
 
                     @Override
@@ -53,12 +57,14 @@ public class InitiateSearch {
                 animatorHide.setDuration(300);
                 animatorHide.start();
             } else {
-                //((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(editText.getWindowToken(), 0);
+                ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(view.getWindowToken(), 0);
+                view.startAnimation(fade_out);
+                view.setVisibility(View.GONE);
                 search.setVisibility(View.GONE);
             }
             editText.setText("");
             toolbarMain.setNavigationIcon(R.mipmap.ic_arrow_back);
-            toolbarMain.setTitle("Fit Health");
+            toolbarMain.setTitle(context.getResources().getString(R.string.radios));
             toolbarMain.getMenu().clear();
             toolbarMain.inflateMenu(R.menu.menu_search);
             search.setEnabled(false);
@@ -68,10 +74,10 @@ public class InitiateSearch {
             toolbarMain.setNavigationIcon(null);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 final Animator animator = ViewAnimationUtils.createCircularReveal(search,
-                    search.getWidth() - (int) convertDpToPixel(56, context),
-                    (int) convertDpToPixel(23, context),
-                    0,
-                    (float) Math.hypot(search.getWidth(), search.getHeight()));
+                        search.getWidth() - (int) convertDpToPixel(56, context),
+                        (int) convertDpToPixel(23, context),
+                        0,
+                        (float) Math.hypot(search.getWidth(), search.getHeight()));
                 animator.addListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animation) {
@@ -79,7 +85,9 @@ public class InitiateSearch {
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        //((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+                        view.setVisibility(View.GONE);
+                        view.startAnimation(fade_in);
+                        ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
                     }
 
                     @Override
@@ -97,11 +105,28 @@ public class InitiateSearch {
                     animator.setDuration(300);
                     animator.start();
                     search.setEnabled(true);
+                    search.requestFocus();
                 }
+                fade_in.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
             } else {
                 search.setVisibility(View.VISIBLE);
                 search.setEnabled(true);
-                //((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+                search.requestFocus();
+                ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
             }
         }
     }

@@ -5,17 +5,11 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -35,11 +29,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.materialdesigncodelab.R;
 import com.example.android.materialdesigncodelab.domains.RadioStation;
@@ -67,13 +57,12 @@ public class RadiosCardActivity extends AppCompatActivity {
     private CardView card_search;
     private ImageView image_search_back;
     private String jsonFav;
-    Boolean verif = false; //False veut dire que c'est un langage
+    Boolean verif = false; //False veut dire que c'est un langage (pas une catégorie)
     private String extra;
     private Bundle bundle;
     public static Gson gson;
     public static RecyclerView recyclerView;
     public static ContentAdapter adapter;
-
 
     public void initial() {
         gson = new Gson();
@@ -88,11 +77,10 @@ public class RadiosCardActivity extends AppCompatActivity {
         RadioApplication.listRadiosToShow = new ArrayList<>();
         if (!bundle.getString("extra").equals("")) extra = bundle.getString("extra");
         if (Arrays.asList(RadioApplication.tags).contains(extra))
-            verif = true; //True veut dire que c'est un tag
+            verif = true; //True veut dire que c'est un tag (catégorie)
         for (RadioStation item : RadioApplication.listRadios) {
             if ((verif && item.getTags().toUpperCase().contains(extra)) || (!verif && item.getLangua().toUpperCase().contains(extra))) {
                 RadioApplication.listRadiosToShow.add(item);
-                Log.e("item", item.getTags() + " - " + item.getLangua());
             }
         }
         adapter = new ContentAdapter(RadioApplication.listRadiosToShow);
@@ -221,7 +209,8 @@ public class RadiosCardActivity extends AppCompatActivity {
     }
 
     private void swap(ContentAdapter adapter) {
-        recyclerView.swapAdapter(adapter, true);
+        adapter.notifyDataSetChanged();
+        recyclerView.setAdapter(adapter);
     }
 
     //TODO vocal

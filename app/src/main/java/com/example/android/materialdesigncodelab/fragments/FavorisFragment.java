@@ -27,7 +27,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +47,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.support.v7.widget.LinearLayoutManager.*;
+import static android.support.v7.widget.LinearLayoutManager.HORIZONTAL;
+import static android.support.v7.widget.LinearLayoutManager.VERTICAL;
 
 /**
  * Provides UI for the view with Cards.
@@ -83,10 +83,10 @@ public class FavorisFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         int ot = getResources().getConfiguration().orientation;
-        switch(ot) {
-            case  Configuration.ORIENTATION_LANDSCAPE:
-                Log.d("my orient" ,"ORIENTATION_LANDSCAPE");
-                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),HORIZONTAL,false));
+        switch (ot) {
+            case Configuration.ORIENTATION_LANDSCAPE:
+                Log.d("my orient", "ORIENTATION_LANDSCAPE");
+                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), HORIZONTAL, false));
                 break;
             default:
                 Log.d("my orient", "default val");

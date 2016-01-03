@@ -113,6 +113,16 @@
         android:layout_marginRight="@dimen/md_keylines"
         android:src="@drawable/ic_stop"
         android:visibility="gone" />
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/record"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|bottom"
+        android:layout_marginBottom="@dimen/md_keylines"
+        android:layout_marginLeft="@dimen/md_keylines"
+        android:src="@drawable/mic"
+        android:visibility="visible" />
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/play"

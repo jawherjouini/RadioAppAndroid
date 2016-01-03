@@ -47,7 +47,7 @@ public class SplashScreen extends Activity implements IAsyncTask {
         setContentView(R.layout.splash);
         gson = new Gson();
 
-        if (getCountry(this) != null) {
+        if (!getCountry(this).equals("")) {
             RadioApplication.country = getCountry(this);
             Log.e("country", RadioApplication.country);
         }
@@ -62,6 +62,7 @@ public class SplashScreen extends Activity implements IAsyncTask {
     public static String getCountry(Context c) {
         TelephonyManager manager = (TelephonyManager) c
                 .getSystemService(Context.TELEPHONY_SERVICE);
+        String result = "";
         HashMap countryLookupMap = countryLookupMap = new HashMap();
         countryLookupMap.put("AD", "Andorra");
         countryLookupMap.put("AE", "United Arab Emirates");
@@ -302,7 +303,11 @@ public class SplashScreen extends Activity implements IAsyncTask {
         countryLookupMap.put("ZA", "South Africa");
         countryLookupMap.put("ZM", "Zambia");
         countryLookupMap.put("ZW", "Zimbabwe");
-        return countryLookupMap.get(manager.getNetworkCountryIso().toUpperCase()).toString().toUpperCase();
+        try {
+            result = countryLookupMap.get(manager.getNetworkCountryIso().toUpperCase()).toString().toUpperCase();
+        } catch (NullPointerException e) {
+        }
+        return result;
     }
 
     @Override

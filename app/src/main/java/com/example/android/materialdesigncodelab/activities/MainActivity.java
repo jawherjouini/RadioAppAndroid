@@ -17,9 +17,7 @@
 package com.example.android.materialdesigncodelab.activities;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -30,15 +28,15 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
-import com.example.android.materialdesigncodelab.fragments.ByLangFragment;
-import com.example.android.materialdesigncodelab.fragments.FavorisFragment;
-import com.example.android.materialdesigncodelab.fragments.ListContentFragment;
 import com.example.android.materialdesigncodelab.R;
+import com.example.android.materialdesigncodelab.fragments.ByLangFragment;
 import com.example.android.materialdesigncodelab.fragments.ByTagsFragment;
+import com.example.android.materialdesigncodelab.fragments.FavorisFragment;
+import com.example.android.materialdesigncodelab.fragments.ByCountryFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +48,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
+    ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,10 +58,11 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Setting ViewPager for each Tabs
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+      viewPager  = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
         // Set Tabs inside Toolbar
         TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
+        tabs.setTabMode(TabLayout.MODE_SCROLLABLE);
         tabs.setupWithViewPager(viewPager);
         // Create Navigation drawer and inlfate layout
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -79,9 +79,13 @@ public class MainActivity extends AppCompatActivity {
                     // This method will trigger on item Click of navigation menu
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        // Set item in checked state
+                        String pos=menuItem.getTitle().toString();
+                        Log.e("position:",""+pos);
                         menuItem.setChecked(true);
-
+                /*       switch(pos)
+                        {
+                            case "Home"
+                        }*/
                         // Closing drawer on item click
                         mDrawerLayout.closeDrawers();
                         return true;
@@ -93,10 +97,10 @@ public class MainActivity extends AppCompatActivity {
     // Add Fragments to Tabs
     private void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getSupportFragmentManager());
-        adapter.addFragment(new ListContentFragment(), "Near Me");
+        adapter.addFragment(new ByCountryFragment(), "Near me");
         adapter.addFragment(new ByTagsFragment(), "Category");
         adapter.addFragment(new ByLangFragment(), "Languages");
-        adapter.addFragment(new FavorisFragment(), "Favs");
+        adapter.addFragment(new FavorisFragment(), "Favorite");
 
         viewPager.setAdapter(adapter);
     }
@@ -123,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
             mFragmentList.add(fragment);
             mFragmentTitleList.add(title);
         }
+
 
         @Override
         public CharSequence getPageTitle(int position) {

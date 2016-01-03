@@ -39,7 +39,7 @@ import com.squareup.picasso.Picasso;
 /**
  * Provides UI for the view with List.
  */
-public class ListContentFragment extends Fragment {
+public class ByCountryFragment extends Fragment {
 
     static Activity activity;
 

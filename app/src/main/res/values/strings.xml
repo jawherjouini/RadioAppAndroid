@@ -17,6 +17,7 @@
     <string name="app_name">"Radio FM"</string>
     <string name="action_settings">Settings</string>
     <string name="item_title">Mosaique FM</string>
+    <string name="action_search">Search</string>
     <string name="item_desc">Radio Mosaïque FM émet sur le:88.9 FM : Hammamet
 
     </string>

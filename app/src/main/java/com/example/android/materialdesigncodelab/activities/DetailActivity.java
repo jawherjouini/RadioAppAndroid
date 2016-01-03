@@ -17,6 +17,7 @@
 package com.example.android.materialdesigncodelab.activities;
 
 import android.app.DialogFragment;
+import android.content.pm.ActivityInfo;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -59,16 +60,21 @@ public class DetailActivity extends AppCompatActivity implements MyDialogFragmen
     private FloatingActionButton record;
     private MediaRecorder mRecorder = null;
     boolean mStartRecording = false;
- //   private MediaPlayer   mPlayer = null;
+    //   private MediaPlayer   mPlayer = null;
 
-   private DetailActivity self;
+    private DetailActivity self;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        self= this;
+        self = this;
+        if (RadioApplication.landscape == true) {
+            self.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        } else {
+            self.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // Set Collapsing Toolbar layout to the screen
@@ -87,12 +93,11 @@ public class DetailActivity extends AppCompatActivity implements MyDialogFragmen
         record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!mStartRecording){
+                if (!mStartRecording) {
                     DialogFragment newFragment = new MyDialogFragment();
                     newFragment.show(getFragmentManager(), "File Name");
 
-                }else
-                {
+                } else {
                     onRecord(false);
                     onPlay(true);
                     mStartRecording = false;
@@ -233,24 +238,25 @@ public class DetailActivity extends AppCompatActivity implements MyDialogFragmen
         mRecorder.release();
         mRecorder = null;
     }
+
     public void AudioRecordTest(String name) {
         mFileName = Environment.getExternalStorageDirectory().getAbsolutePath();
-        mFileName += name+".3gp";
-        Log.e("filename",mFileName);
+        mFileName += name + ".3gp";
+        Log.e("filename", mFileName);
     }
 
 
     @Override
     public void onDialogPositiveClick(MyDialogFragment dialog) {
-        Log.e("save","seif");
-        if(!dialog.editText.getText().toString().isEmpty()){
-            self.AudioRecordTest("/"+dialog.editText.getText().toString());
+        Log.e("save", "seif");
+        if (!dialog.editText.getText().toString().isEmpty()) {
+            self.AudioRecordTest("/" + dialog.editText.getText().toString());
             record.setImageResource(R.drawable.recording);
             onRecord(true);
 
             mStartRecording = true;
-        }else
-            Toast.makeText(getApplicationContext(),"File name could not be empty",Toast.LENGTH_SHORT).show();
+        } else
+            Toast.makeText(getApplicationContext(), "File name could not be empty", Toast.LENGTH_SHORT).show();
 
     }
 

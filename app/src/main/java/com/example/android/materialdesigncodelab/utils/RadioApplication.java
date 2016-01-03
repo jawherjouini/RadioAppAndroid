@@ -7,6 +7,8 @@ import com.example.android.materialdesigncodelab.domains.RadioStation;
 import java.util.List;
 
 public class RadioApplication extends Application {
+    public static boolean landscape = false;
+
     public static String[] languages = {"ALBANIAN",
             "ARABIC",
             "CHINESE",

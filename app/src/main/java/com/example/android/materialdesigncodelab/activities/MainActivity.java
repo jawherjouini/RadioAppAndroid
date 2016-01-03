@@ -39,6 +39,7 @@ import com.example.android.materialdesigncodelab.fragments.ByLangFragment;
 import com.example.android.materialdesigncodelab.fragments.ByTagsFragment;
 import com.example.android.materialdesigncodelab.fragments.FavorisFragment;
 import com.example.android.materialdesigncodelab.fragments.ByCountryFragment;
+import com.example.android.materialdesigncodelab.utils.RadioApplication;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,10 +89,12 @@ public class MainActivity extends AppCompatActivity {
                         menuItem.setChecked(true);
                         switch (pos.toUpperCase().trim()) {
                             case "HOME":
+                                RadioApplication.landscape = false;
                                 activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                                 viewPager.setCurrentItem(0);
                                 break;
                             case "CAR MODE":
+                                RadioApplication.landscape = true;
                                 activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                                 viewPager.setCurrentItem(3);
                                 break;

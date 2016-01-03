@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -44,6 +45,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import static android.support.v7.widget.LinearLayoutManager.*;
 
 public class RadiosCardActivity extends AppCompatActivity {
     private static Activity activity;
@@ -101,7 +104,13 @@ public class RadiosCardActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         recyclerView.setAdapter(RadiosCardActivity.adapter);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(activity));
+        if (RadioApplication.landscape == true) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(activity, HORIZONTAL, false));
+            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        } else {
+            recyclerView.setLayoutManager(new LinearLayoutManager(activity, VERTICAL, false));
+            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_arrow_back);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {

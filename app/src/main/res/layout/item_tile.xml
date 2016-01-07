@@ -24,6 +24,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="@dimen/tile_height"
+        android:id="@+id/tag"
         android:scaleType="centerCrop"
         android:src="@drawable/radiooooos" />
 

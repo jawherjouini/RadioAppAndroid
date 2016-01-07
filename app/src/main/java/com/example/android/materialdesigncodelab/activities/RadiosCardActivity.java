@@ -46,8 +46,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import static android.support.v7.widget.LinearLayoutManager.*;
-
 public class RadiosCardActivity extends AppCompatActivity {
     private static Activity activity;
     private Toolbar toolbar;
@@ -95,6 +93,11 @@ public class RadiosCardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_radios_card);
+        if(!RadioApplication.isPortrait)
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        else
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         activity = this;
         initiateSearch = new InitiateSearch();
         res = this.getResources();
@@ -104,13 +107,7 @@ public class RadiosCardActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         recyclerView.setAdapter(RadiosCardActivity.adapter);
         recyclerView.setHasFixedSize(true);
-        if (RadioApplication.landscape == true) {
-            recyclerView.setLayoutManager(new LinearLayoutManager(activity, HORIZONTAL, false));
-            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        } else {
-            recyclerView.setLayoutManager(new LinearLayoutManager(activity, VERTICAL, false));
-            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
+        recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_arrow_back);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -329,7 +326,7 @@ public class RadiosCardActivity extends AppCompatActivity {
                     Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                     sharingIntent.setType("text/html");
                     sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Radio FM share");
-                    sharingIntent.putExtra(Intent.EXTRA_TEXT, "I am listening to " + RadioApplication.selectedRadio.toString());
+                    sharingIntent.putExtra(Intent.EXTRA_TEXT, "I am listening to " + RadioApplication.selectedRadio.getName()+" From Radio Fm");
                     activity.startActivity(Intent.createChooser(sharingIntent, "Share using"));
                 }
             });

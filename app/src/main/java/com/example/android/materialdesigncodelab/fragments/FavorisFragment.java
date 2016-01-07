@@ -19,7 +19,6 @@ package com.example.android.materialdesigncodelab.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -47,7 +46,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.support.v7.widget.LinearLayoutManager.HORIZONTAL;
 import static android.support.v7.widget.LinearLayoutManager.VERTICAL;
 
 /**
@@ -80,19 +78,10 @@ public class FavorisFragment extends Fragment {
         }
 
         adapter = new ContentAdapter();
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), VERTICAL, false));
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
-        int ot = getResources().getConfiguration().orientation;
-        switch (ot) {
-            case Configuration.ORIENTATION_LANDSCAPE:
-                Log.d("my orient", "ORIENTATION_LANDSCAPE");
-                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), HORIZONTAL, false));
-                break;
-            default:
-                Log.d("my orient", "default val");
-                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), VERTICAL, false));
-                break;
-        }
+
         return recyclerView;
     }
 

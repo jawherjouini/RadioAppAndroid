@@ -16,13 +16,21 @@
 
 package com.example.android.materialdesigncodelab.activities;
 
+import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.Settings;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +39,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,30 +60,36 @@ public class DetailActivity extends AppCompatActivity implements MyDialogFragmen
     TextView tags, language;
     TextView homepage, country;
     FloatingActionButton play, stop;
-    private MediaPlayer mPlayer;
 
-
+ProgressBar progressBar;
     private static final String LOG_TAG = "AudioRecordTest";
     private static String mFileName = null;
 
     private FloatingActionButton record;
     private MediaRecorder mRecorder = null;
     boolean mStartRecording = false;
-    //   private MediaPlayer   mPlayer = null;
+ //   private MediaPlayer   mPlayer = null;
 
-    private DetailActivity self;
+   private DetailActivity self;
 
-
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        self = this;
-        if (RadioApplication.landscape == true) {
-            self.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        } else {
-            self.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
+        progressBar=(ProgressBar)findViewById(R.id.pb);
+        progressBar.setVisibility(View.GONE);
+        if(!RadioApplication.isPortrait)
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+else
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        self= this;
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // Set Collapsing Toolbar layout to the screen
@@ -93,11 +108,12 @@ public class DetailActivity extends AppCompatActivity implements MyDialogFragmen
         record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!mStartRecording) {
+                if(!mStartRecording){
                     DialogFragment newFragment = new MyDialogFragment();
                     newFragment.show(getFragmentManager(), "File Name");
 
-                } else {
+                }else
+                {
                     onRecord(false);
                     onPlay(true);
                     mStartRecording = false;
@@ -130,40 +146,22 @@ public class DetailActivity extends AppCompatActivity implements MyDialogFragmen
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                play.setVisibility(View.GONE);
-                stop.setVisibility(View.VISIBLE);
-                mPlayer = new MediaPlayer();
-                mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                try {
-                    mPlayer.setDataSource(RadioApplication.selectedRadio.getUrl());
-                } catch (IllegalArgumentException e) {
-                    Toast.makeText(getApplicationContext(), "Url Incorrect", Toast.LENGTH_LONG).show();
-                } catch (SecurityException e) {
-                    Toast.makeText(getApplicationContext(), "Url Incorrect", Toast.LENGTH_LONG).show();
-                } catch (IllegalStateException e) {
-                    Toast.makeText(getApplicationContext(), "Url Incorrect!", Toast.LENGTH_LONG).show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    mPlayer.prepare();
-                } catch (IllegalStateException e) {
-                    Toast.makeText(getApplicationContext(), "Url Incorrect", Toast.LENGTH_LONG).show();
-                } catch (IOException e) {
-                    Toast.makeText(getApplicationContext(), "Url Incorrect", Toast.LENGTH_LONG).show();
-                }
-                mPlayer.start();
+
+new LongOperation().execute();
             }
+
         });
 
         stop = (FloatingActionButton) findViewById(R.id.stop);
         stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressBar.setVisibility(View.GONE);
                 play.setVisibility(View.VISIBLE);
                 stop.setVisibility(View.GONE);
-                if (mPlayer != null && mPlayer.isPlaying()) {
-                    mPlayer.stop();
+                if (RadioApplication.mPlayer != null && RadioApplication.mPlayer .isPlaying()) {
+                    RadioApplication.mPlayer .stop();
+                    RadioApplication.mPlayer=null;
                 }
             }
         });
@@ -202,19 +200,19 @@ public class DetailActivity extends AppCompatActivity implements MyDialogFragmen
     }
 
     private void startPlaying() {
-        mPlayer = new MediaPlayer();
+        RadioApplication.mPlayer  = new MediaPlayer();
         try {
-            mPlayer.setDataSource(mFileName);
-            mPlayer.prepare();
-            mPlayer.start();
+            RadioApplication.mPlayer .setDataSource(mFileName);
+            RadioApplication.mPlayer .prepare();
+            RadioApplication.mPlayer .start();
         } catch (IOException e) {
             Log.e(LOG_TAG, "prepare() failed");
         }
     }
 
     private void stopPlaying() {
-        mPlayer.release();
-        mPlayer = null;
+        RadioApplication.mPlayer .release();
+        RadioApplication.mPlayer  = null;
     }
 
     private void startRecording() {
@@ -238,25 +236,24 @@ public class DetailActivity extends AppCompatActivity implements MyDialogFragmen
         mRecorder.release();
         mRecorder = null;
     }
-
     public void AudioRecordTest(String name) {
         mFileName = Environment.getExternalStorageDirectory().getAbsolutePath();
-        mFileName += name + ".3gp";
-        Log.e("filename", mFileName);
+        mFileName += name+".3gp";
+        Log.e("filename",mFileName);
     }
 
 
     @Override
     public void onDialogPositiveClick(MyDialogFragment dialog) {
-        Log.e("save", "seif");
-        if (!dialog.editText.getText().toString().isEmpty()) {
-            self.AudioRecordTest("/" + dialog.editText.getText().toString());
+        Log.e("save","seif");
+        if(!dialog.editText.getText().toString().isEmpty()){
+            self.AudioRecordTest("/"+dialog.editText.getText().toString());
             record.setImageResource(R.drawable.recording);
             onRecord(true);
 
             mStartRecording = true;
-        } else
-            Toast.makeText(getApplicationContext(), "File name could not be empty", Toast.LENGTH_SHORT).show();
+        }else
+            Toast.makeText(getApplicationContext(),"File name could not be empty",Toast.LENGTH_SHORT).show();
 
     }
 
@@ -265,5 +262,74 @@ public class DetailActivity extends AppCompatActivity implements MyDialogFragmen
 
     }
 
+    private class LongOperation extends AsyncTask<String, Void, String> {
+public boolean ok=false;
+        @Override
+        protected String doInBackground(String... params) {
+            if(ok){
 
+                if (RadioApplication.mPlayer != null && RadioApplication.mPlayer .isPlaying()) {
+                    RadioApplication.mPlayer .stop();
+                }
+                RadioApplication.mPlayer = new MediaPlayer();
+                RadioApplication.mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                try {
+                    RadioApplication.mPlayer.setDataSource(RadioApplication.selectedRadio.getUrl());
+                } catch (IllegalArgumentException e) {
+                    Toast.makeText(getApplicationContext(), "Url Incorrect", Toast.LENGTH_LONG).show();
+                } catch (SecurityException e) {
+                    Toast.makeText(getApplicationContext(), "Url Incorrect", Toast.LENGTH_LONG).show();
+                } catch (IllegalStateException e) {
+                    Toast.makeText(getApplicationContext(), "Url Incorrect!", Toast.LENGTH_LONG).show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    RadioApplication.mPlayer.prepare();
+                } catch (IllegalStateException e) {
+                    Toast.makeText(getApplicationContext(), "Url Incorrect", Toast.LENGTH_LONG).show();
+                } catch (IOException e) {
+                    Toast.makeText(getApplicationContext(), "Url Incorrect", Toast.LENGTH_LONG).show();
+                }
+                RadioApplication.mPlayer.start();
+            }
+            return "Executed";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            progressBar.setVisibility(View.GONE);
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            if(isOnline()){
+                progressBar.setVisibility(View.VISIBLE);
+                ok=true;
+                play.setVisibility(View.GONE);
+                stop.setVisibility(View.VISIBLE);}
+            else{
+
+                new AlertDialog.Builder(DetailActivity.this)
+                        .setTitle("Internet Configuration")
+                        .setMessage("You must open internet connection")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+
+            }
+        }
+
+
+    }
 }

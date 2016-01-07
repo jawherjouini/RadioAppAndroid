@@ -49,8 +49,6 @@ import java.util.List;
  * Provides UI for the main screen.
  */
 public class MainActivity extends AppCompatActivity {
-
-    private DrawerLayout mDrawerLayout;
     ViewPager viewPager;
     Activity activity;
 
@@ -58,6 +56,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (!RadioApplication.isPortrait)
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        else
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         activity = this;
         // Adding Toolbar to Main screen
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -69,41 +71,12 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
         tabs.setTabMode(TabLayout.MODE_SCROLLABLE);
         tabs.setupWithViewPager(viewPager);
-        // Create Navigation drawer and inlfate layout
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         // Adding menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
             supportActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
-        // Set behavior of Navigation drawer
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    // This method will trigger on item Click of navigation menu
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        String pos = menuItem.getTitle().toString();
-                        Log.e("position:", "" + pos);
-                        menuItem.setChecked(true);
-                        switch (pos.toUpperCase().trim()) {
-                            case "HOME":
-                                RadioApplication.landscape = false;
-                                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                                viewPager.setCurrentItem(0);
-                                break;
-                            case "CAR MODE":
-                                RadioApplication.landscape = true;
-                                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                                viewPager.setCurrentItem(3);
-                                break;
-                        }
-                        // Closing drawer on item click
-                        mDrawerLayout.closeDrawers();
-                        return true;
-                    }
-                });
 
     }
 
@@ -162,10 +135,12 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == android.R.id.home) {
-            mDrawerLayout.openDrawer(GravityCompat.START);
+        if (id == R.id.action_normal) {
+            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            RadioApplication.isPortrait = true;
+        } else if (id == R.id.action_car) {
+            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            RadioApplication.isPortrait = false;
         }
         return super.onOptionsItemSelected(item);
     }

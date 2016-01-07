@@ -22,14 +22,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.materialdesigncodelab.R;
-import com.example.android.materialdesigncodelab.activities.DetailActivity;
 import com.example.android.materialdesigncodelab.activities.RadiosCardActivity;
 import com.example.android.materialdesigncodelab.utils.RadioApplication;
 
@@ -65,15 +64,17 @@ public class ByTagsFragment extends Fragment {
 
         TextView list_title;
         String tag;
+        ImageView imageView;
 
         public ViewHolder(View itemView) {
             super(itemView);
             list_title = (TextView) itemView.findViewById(R.id.tile_title);
+            imageView = (ImageView) itemView.findViewById(R.id.tag);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Context context = v.getContext();
-                    Intent intent = new Intent(context, RadiosCardActivity.class).putExtra("extra",tag.toUpperCase());
+                    Intent intent = new Intent(context, RadiosCardActivity.class).putExtra("extra", tag.toUpperCase());
                     context.startActivity(intent);
                 }
             });
@@ -103,6 +104,35 @@ public class ByTagsFragment extends Fragment {
         public void onBindViewHolder(ViewHolder holder, int position) {
             holder.list_title.setText(RadioApplication.tags[position]);
             holder.tag = RadioApplication.tags[position];
+            switch (position) {
+                case 0:
+                    holder.imageView.setImageResource(R.drawable.a);
+                    break;
+                case 1:
+                    holder.imageView.setImageResource(R.drawable.b);
+                    break;
+                case 2:
+                    holder.imageView.setImageResource(R.drawable.c);
+                    break;
+                case 3:
+                    holder.imageView.setImageResource(R.drawable.d);
+                    break;
+                case 4:
+                    holder.imageView.setImageResource(R.drawable.e);
+                    break;
+                case 5:
+                    holder.imageView.setImageResource(R.drawable.f);
+                    break;
+                case 6:
+                    holder.imageView.setImageResource(R.drawable.g);
+                    break;
+                case 7:
+                    holder.imageView.setImageResource(R.drawable.h);
+                    break;
+                case 8:
+                    holder.imageView.setImageResource(R.drawable.i);
+                    break;
+            }
         }
 
         @Override

@@ -345,6 +345,7 @@ public class SplashScreen extends Activity implements IAsyncTask {
         protected void onPreExecute() {
             //Start Progress Dialog (Message)
             Dialog.setMessage("Please wait..");
+            Dialog.setCancelable(false);
             Dialog.show();
         }
 
